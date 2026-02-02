@@ -1,4 +1,4 @@
-package hello.core.member;
+package hello.core.section3_basic.member;
 
 public interface MemberRepository {
     void save(Member member);

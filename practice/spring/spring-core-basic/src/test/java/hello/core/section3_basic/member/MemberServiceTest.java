@@ -1,5 +1,9 @@
-package hello.core.member;
+package hello.core.section3_basic.member;
 
+import hello.core.section3_basic.member.Grade;
+import hello.core.section3_basic.member.Member;
+import hello.core.section3_basic.member.MemberService;
+import hello.core.section3_basic.member.MemberServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package hello.core.member;
+package hello.core.section3_basic.member;
 
 public class MemberServiceImpl implements MemberService{
     // 구현체 의존 DIP 위반
