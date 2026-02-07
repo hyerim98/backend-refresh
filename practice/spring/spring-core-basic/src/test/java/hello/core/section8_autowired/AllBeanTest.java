@@ -1,0 +1,42 @@
+package hello.core.section8_autowired;
+
+import hello.core.section8_autowired.discount.DiscountPolicy;
+import hello.core.section8_autowired.member.Grade;
+import hello.core.section8_autowired.member.Member;
+import lombok.RequiredArgsConstructor;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
+
+public class AllBeanTest {
+
+    @Test
+    void findAllBean() {
+        ApplicationContext ac = new AnnotationConfigApplicationContext(AutoAppConfig.class);
+        DiscountService discountService = ac.getBean(DiscountService.class);
+        Member member = new Member(1L, "memberA", Grade.VIP);
+        int discountPrice = discountService.discount(member, 20000, "rateDiscountPolicyImpl");
+
+        Assertions.assertThat(discountService).isInstanceOf(DiscountService.class);
+        Assertions.assertThat(discountPrice).isEqualTo(2000);
+    }
+
+    @Component
+    @RequiredArgsConstructor
+    static class DiscountService {
+        private final Map<String, DiscountPolicy> policyMap;
+        private final List<DiscountPolicy> policies;
+
+        public int discount(Member member, int price, String discountCode) {
+            DiscountPolicy discountPolicy = policyMap.get(discountCode);
+            System.out.println("discountCode=" + discountCode);
+            System.out.println("discountPolicy=" + discountPolicy);
+            return discountPolicy.discount(member, price);
+        }
+    }
+}
