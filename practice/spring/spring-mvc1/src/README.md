@@ -80,3 +80,79 @@ HTML 직접 생성 -> Response 반환
 
 V0는 **웹 애플리케이션을 프레임워크 없이 가장 기본 단계에서 직접 구현한 상태**  
 이 기준으로 이후 구조 개선을 비교하면 이해가 훨씬 쉬움
+
+
+# MVC1 - Section4: Servlet → JSP → MVC
+
+> V0(순수 서블릿)의 한계를 해결해가는 과정
+
+---
+
+# 🔹 V1 - JSP 도입
+
+## ✅ V0와 달라진 점
+
+- View를 JSP로 분리
+- Servlet에서 HTML 직접 작성 제거
+- RequestDispatcher.forward() 사용
+
+## 🔄 요청 흐름
+
+Servlet → JSP → Response
+
+## 👍 개선점
+
+- HTML 작성 편리
+- 가독성 향상
+- View 관리 용이
+
+## ❗ 한계점
+
+- JSP에 자바 코드(scriptlet) 존재
+- 여전히 Controller + Model 역할 혼재
+- 완전한 MVC 아님
+
+---
+
+# 🔹 V2 - MVC 패턴 적용
+
+## ✅ V1과 달라진 점
+
+- Controller 역할 명확화
+- Model 데이터를 request에 저장
+- View는 화면 렌더링만 담당
+
+## 🔄 요청 흐름
+
+Controller
+→ Model 생성
+→ request.setAttribute()
+→ View(JSP)
+
+## 👍 개선점
+
+- 관심사 분리
+- 유지보수성 증가
+- 구조적 확장 가능
+
+## ❗ 한계점
+
+- Controller마다 중복 코드 발생
+- 공통 처리 어려움
+- Front Controller 필요성 등장
+
+---
+
+# 📌 구조 발전 요약
+
+V0 - 모든 걸 서블릿이 처리  
+V1 - View 분리 (JSP)  
+V2 - 역할 분리 (MVC 완성 형태)
+
+---
+
+# 💡 핵심 학습 포인트
+
+- 관심사 분리의 필요성
+- MVC가 왜 표준 구조가 되었는가
+- 구조는 항상 "한계 → 개선"으로 발전한다
