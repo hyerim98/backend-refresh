@@ -320,3 +320,260 @@ v4 → 더 단순하고 실용적인 구조
 - 프레임워크는 한 번에 완성되는 게 아니라 점진적으로 발전한다.
 - 구조 개선은 "중복 제거 → 역할 분리 → 의존성 제거 → 확장성 확보" 순서로 진행된다.
 - 우리가 만든 구조가 곧 스프링 MVC의 핵심 원리다.
+
+
+
+# MVC1 - Section6: 스프링 MVC 구조 이해
+
+> 내가 직접 만든 MVC 프레임워크(V1~V5)에서  
+> 스프링 MVC 구조로 어떻게 발전하는지 흐름 중심 정리
+
+# 1. DispatcherServlet
+
+## 역할
+- 스프링 MVC의 Front Controller
+- 모든 요청을 중앙에서 받음
+- 전체 흐름 제어
+
+## 내가 만든 구조와 비교
+
+| 직접 구현 | 스프링 MVC |
+|-----------|------------|
+| FrontController | DispatcherServlet |
+
+---
+
+# 2. HandlerMapping
+
+## 역할
+- 요청 URL에 맞는 핸들러(컨트롤러) 조회
+- 어떤 컨트롤러를 실행할지 결정
+
+## 핵심 포인트
+- 컨트롤러 타입과 상관없이 매핑 가능
+- 확장 가능한 구조
+
+---
+
+# 3. HandlerAdapter
+
+## 왜 필요한가?
+
+컨트롤러마다 호출 방식이 다르면  
+Front Controller가 복잡해진다.
+
+→ 이를 해결하기 위해 어댑터 패턴 도입
+
+## 역할
+- 다양한 컨트롤러 타입 실행
+- 반환값을 공통 형태로 변환
+
+## 설계 원칙
+- OCP (확장에는 열려 있고 수정에는 닫혀 있음)
+- 전략 패턴 기반
+
+---
+
+# 4. ModelAndView
+
+## 역할
+- 모델 데이터 + 뷰 이름 보관
+
+## 장점
+- 컨트롤러는 비즈니스에 집중
+- 이후 처리 흐름은 DispatcherServlet이 담당
+
+---
+
+# 5. ViewResolver
+
+## 역할
+- 논리 뷰 이름 → 실제 뷰 경로 변환
+
+## 장점
+- 컨트롤러가 물리 경로에 의존하지 않음
+- View 교체가 쉬움
+
+---
+
+# 6. 전체 요청 흐름
+
+1. 클라이언트 요청
+2. DispatcherServlet이 요청 수신
+3. HandlerMapping으로 핸들러 조회
+4. HandlerAdapter 실행
+5. ModelAndView 반환
+6. ViewResolver 호출
+7. View 렌더링
+8. 응답 반환
+
+---
+
+# 7. 구조 비교 정리
+
+| 직접 만든 MVC | 스프링 MVC |
+|---------------|------------|
+| FrontController | DispatcherServlet |
+| Controller 인터페이스 | Handler |
+| 직접 호출 로직 | HandlerAdapter |
+| ModelView | ModelAndView |
+| 직접 View 처리 | ViewResolver |
+
+---
+
+# 8. 이번 섹션 핵심 정리
+
+1. 스프링 MVC는 내가 만든 MVC의 확장판이다.
+2. Front Controller 패턴의 완성형이다.
+3. 어댑터 패턴으로 유연성을 확보했다.
+4. 전략 패턴 기반으로 확장 가능하다.
+5. OCP를 지키는 구조다.
+
+---
+
+# 한 줄 정리
+
+스프링 MVC는  
+Front Controller + 전략 패턴 + 어댑터 패턴 기반의  
+확장 가능한 웹 프레임워크 구조다.
+
+---
+
+# 9. @Controller 등장 (가장 큰 변화)
+
+## 왜 중요한가?
+
+이전까지는:
+
+- 내가 만든 인터페이스 기반 컨트롤러
+- 명확한 타입의 컨트롤러 구조
+
+하지만 스프링 MVC에서는
+
+→ 특정 인터페이스를 구현하지 않아도 된다.
+
+---
+
+## @Controller의 의미
+
+- 단순한 클래스
+- 인터페이스 구현 필요 없음
+- 메서드에 @RequestMapping 사용
+- 애노테이션 기반 매핑
+
+---
+
+## 무엇이 달라졌는가?
+
+### 1. 컨트롤러가 더 단순해짐
+
+- 특정 인터페이스에 의존하지 않음
+- POJO 기반 개발 가능
+
+---
+
+### 2. HandlerMapping의 변화
+
+이전:
+- 특정 인터페이스 타입 기준으로 매핑
+
+현재:
+- @RequestMapping 애노테이션 기반 매핑
+
+→ RequestMappingHandlerMapping 등장
+
+---
+
+### 3. HandlerAdapter의 변화
+
+이전:
+- 내가 만든 컨트롤러 인터페이스 실행
+
+현재:
+- RequestMappingHandlerAdapter 사용
+- 애노테이션 기반 컨트롤러 실행 지원
+
+---
+
+# 10. 구조 발전 흐름 요약
+
+직접 만든 MVC
+→ 인터페이스 기반 컨트롤러
+
+스프링 초기 MVC
+→ 다양한 컨트롤러 타입 지원
+
+현재 스프링 MVC
+→ @Controller + @RequestMapping 기반
+→ 애노테이션 중심 구조
+
+---
+
+# 11. 이번 섹션의 진짜 핵심
+
+1. DispatcherServlet 구조 이해
+2. HandlerMapping / HandlerAdapter 구조 이해
+3. @Controller 기반 애노테이션 방식 도입
+4. 인터페이스 의존 제거
+5. POJO 기반 개발 가능
+
+---
+
+# 최종 한 줄 정리
+
+스프링 MVC의 가장 큰 변화는  
+인터페이스 기반 컨트롤러에서  
+애노테이션 기반 @Controller 구조로 발전한 것이다.
+
+---
+
+# 12. @Controller와 @RequestMapping의 정확한 역할
+
+## 1. @Controller
+
+### 역할
+
+1) 컴포넌트 스캔 대상이 된다
+- 내부적으로 @Component 포함
+- 스프링 빈으로 등록된다
+
+2) MVC 컨트롤러임을 명시
+- 해당 빈을 핸들러 후보로 인식
+
+주의:
+@Contoller가 직접 URL 매핑을 수행하는 것은 아니다.
+
+---
+
+## 2. @RequestMapping
+
+### 역할
+
+1) URL 매핑 정보 제공
+2) HTTP Method 매핑
+3) 실행할 메서드 지정
+
+이 정보는
+RequestMappingHandlerMapping이 읽어서
+URL ↔ Handler 매핑을 생성한다.
+
+---
+
+## 3. 전체 동작 흐름
+
+1. 컴포넌트 스캔 → @Controller 빈 등록
+2. RequestMappingHandlerMapping이
+   @RequestMapping 메서드 탐색
+3. URL과 실행 메서드 매핑 테이블 생성
+4. 요청이 오면 해당 핸들러 실행
+
+---
+
+# 핵심 정리
+
+@Controller는 "빈 등록 + 컨트롤러 표시"
+
+@RequestMapping은 "URL 매핑 정보 제공"
+
+실제 매핑 작업은
+RequestMappingHandlerMapping이 수행한다.
