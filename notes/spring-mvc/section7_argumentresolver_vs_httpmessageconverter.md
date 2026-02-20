@@ -65,6 +65,18 @@
 
 즉, **HTTP 메시지 Body를 직접 다룰 때만 동작한다.**
 
+### HttpMessageConverter 동작 기준
+
+| 구분 | 요청(Request) | 응답(Response) |
+|------|---------------|----------------|
+| 기준 헤더 | Content-Type | Accept |
+| 변환 방향 | Body → 객체 | 객체 → Body |
+| 검사 메서드 | canRead() | canWrite() |
+| 클래스 확인 | 파라미터 타입 | 반환 타입 |
+| 미디어 타입 확인 | Content-Type 기준 | Accept 기준 |
+
+HttpMessageConverter는 요청에서는 Content-Type을 기준으로 읽고, 응답에서는 Accept를 기준으로 쓴다.
+
 ---
 
 ### 해결하는 문제
