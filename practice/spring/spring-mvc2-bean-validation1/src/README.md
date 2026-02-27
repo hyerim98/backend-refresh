@@ -1,0 +1,1 @@
+> 해당 README spring-mv2-bean-validation2 README에 합쳐서 정리해놓음
