@@ -228,3 +228,186 @@ Interceptor
 
 DispatcherType 설정과  
 경로 제외 설정으로 이를 제어해야 한다.
+
+---
+# BasicErrorController
+
+Spring Boot는 기본적으로 오류 처리를 위한 Controller를 제공한다.
+
+바로
+
+BasicErrorController
+
+이다.
+
+개발자가 별도로 ErrorController를 만들지 않아도
+Spring Boot가 기본 오류 페이지를 제공하는 이유가 이것 때문이다.
+
+---
+
+# 1️⃣ BasicErrorController 역할
+
+예외가 발생하면
+
+WAS → 오류 요청 생성 → Spring MVC
+
+그리고
+
+BasicErrorController가 이 요청을 처리한다.
+
+요청 흐름
+
+사용자 요청  
+↓  
+Controller 실행  
+↓  
+Exception 발생  
+↓  
+WAS 오류 처리  
+↓  
+/error 요청 발생  
+↓  
+BasicErrorController 실행  
+↓  
+오류 화면 반환
+
+---
+
+# 2️⃣ BasicErrorController 요청 경로
+
+Spring Boot는 기본적으로
+
+```
+/error
+```
+
+경로를 오류 처리 경로로 사용한다.
+
+예외 발생 시
+
+WAS가
+
+```
+/error
+```
+
+로 요청을 전달한다.
+
+그리고 이 요청을
+
+BasicErrorController가 처리한다.
+
+---
+
+# 3️⃣ 반환되는 오류 페이지
+
+BasicErrorController는
+
+요청 타입에 따라 다른 결과를 반환한다.
+
+### HTML 요청
+
+브라우저 요청이면
+
+오류 페이지 View 반환
+
+예
+
+```
+error/404
+error/500
+error
+```
+
+순서로 View를 찾는다.
+
+예
+
+```
+templates/error/404.html
+templates/error/500.html
+templates/error.html
+```
+
+---
+
+### API 요청 (JSON)
+
+API 요청이면
+
+JSON 형태 오류 응답 반환
+
+예
+
+```
+{
+  "timestamp": "2026-03-08T11:00:00",
+  "status": 500,
+  "error": "Internal Server Error",
+  "path": "/api/members"
+}
+```
+
+---
+
+# 4️⃣ 오류 정보 제공
+
+BasicErrorController는
+
+ErrorAttributes를 통해
+오류 정보를 가져온다.
+
+대표 제공 정보
+
+- timestamp
+- status
+- error
+- exception
+- message
+- path
+
+이 정보는
+
+request attribute
+
+에서 가져온다.
+
+---
+
+# 5️⃣ 오류 페이지 우선순위
+
+Spring Boot 오류 페이지 탐색 순서
+
+1️⃣ 상태 코드 페이지
+
+```
+error/404.html
+error/500.html
+```
+
+2️⃣ 공통 오류 페이지
+
+```
+error.html
+```
+
+3️⃣ BasicErrorController 기본 오류 응답
+
+---
+
+# 6️⃣ 핵심 정리
+
+Spring Boot는
+
+BasicErrorController를 기본 제공하여
+
+예외 발생 시
+
+```
+/error
+```
+
+요청을 처리하고
+
+HTML 요청이면 오류 View를 반환하고  
+API 요청이면 JSON 오류 응답을 반환한다.
