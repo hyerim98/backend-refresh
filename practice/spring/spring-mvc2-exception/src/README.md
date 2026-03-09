@@ -331,3 +331,162 @@ BasicErrorController를 기본 제공하여
 
 HTML 요청이면 오류 View를 반환하고  
 API 요청이면 JSON 오류 응답을 반환한다.
+
+---
+
+# Section 10 - API 예외 처리 발전 과정
+
+API 예외 처리를 단계적으로 개선하는 과정 정리
+
+---
+
+# v1 기본 예외 발생
+
+Controller에서 예외 발생
+
+요청  
+↓  
+Controller  
+↓  
+Exception 발생  
+↓  
+WAS 오류 페이지
+
+문제
+
+API 요청에서도
+HTML 오류 페이지가 반환된다.
+
+---
+
+# v2 상태 코드 설정
+
+예외 클래스에
+
+@ResponseStatus
+
+사용
+
+예
+
+```
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class BadRequestException extends RuntimeException {
+}
+```
+
+예외 발생 시
+
+400 상태 코드 반환
+
+한계
+
+- JSON 오류 응답 생성 어려움
+- 다양한 예외 처리 불편
+
+---
+
+# v3 HandlerExceptionResolver
+
+직접 Resolver 구현
+
+역할
+
+예외 발생 시
+
+- 상태 코드 설정
+- JSON 응답 생성
+
+요청 흐름
+
+요청  
+↓  
+Controller  
+↓  
+Exception 발생  
+↓  
+ExceptionResolver 실행  
+↓  
+JSON 오류 응답
+
+문제
+
+코드가 복잡함
+
+---
+
+# v4 @ExceptionHandler 사용
+
+Controller 내부에서
+예외 처리 메서드 작성
+
+예
+
+```
+@ExceptionHandler(IllegalArgumentException.class)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public ErrorResult handle(IllegalArgumentException e) {
+    return new ErrorResult("BAD", e.getMessage());
+}
+```
+
+장점
+
+- 코드 간단
+- 예외 처리 명확
+
+---
+
+# v5 ControllerAdvice 적용
+
+여러 Controller에서 발생하는
+예외를 한 곳에서 처리
+
+예
+
+```
+@RestControllerAdvice
+public class ExControllerAdvice {
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ErrorResult handle(IllegalArgumentException e) {
+        return new ErrorResult("BAD", e.getMessage());
+    }
+
+}
+```
+
+---
+
+# 최종 API 예외 처리 구조
+
+요청  
+↓  
+Controller  
+↓  
+Exception 발생  
+↓  
+DispatcherServlet  
+↓  
+ExceptionResolver  
+↓  
+@ExceptionHandler  
+↓  
+JSON 오류 응답 반환
+
+---
+
+# 핵심 정리
+
+API 서버에서는
+
+예외 발생 시
+
+JSON 형태 오류 응답을 반환해야 하며
+
+Spring MVC에서는
+
+- @ExceptionHandler
+- @ControllerAdvice
+
+를 사용해 예외를 처리한다.
