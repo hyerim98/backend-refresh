@@ -7,11 +7,11 @@
 ---
 
 ## 🔹 폴더 구조
-- `notes/`         : 강의 + 실습 기반 이해 정리 (내 언어)
+- `notes/`         : 개념 및 동작 원리 정리
 - `practice/`      : 코드 실습 + 실험 기록
   - `original/`  : 강의 코드 그대로
   - `experiment/`: 내 실험 코드
-  - `README.md`  : 실험 목적/방법/관찰 기록
+  - `README.md`  : 강의 코드 기반 구현 흐름 정리
 - `errors/`        : 삽질 기록 (발생 상황, 원인, 해결법)
 - `references/`    : 책, 블로그, 외부 자료 링크
 - `tools/`         : IDE, Git, 터미널 등 실무 도구 활용 팁
@@ -21,13 +21,65 @@
 
 ## 🔹 학습 순서
 
-### 1️⃣ 스프링 핵심 원리
-- **섹션1: OOP 설계 이해**
-    - 강의 → 코드 작성 → 실험 → practice README → notes 작성
-- **섹션2: AppConfig**
-    - 강의 → 코드 작성 → 실험 → practice README → notes 작성
-- **섹션3: 스프링 컨테이너 / 싱글톤**
-    - 실습 중심 → notes 작성
+### 1️⃣ 스프링
+🌱 **스프링 핵심 원리** 🌱
+  - 주요 학습 내용
+    - 객체 지향 설계
+    - SOLID 원칙
+    - DI (Dependency Injection)
+    - Spring Container
+    - Bean 관리
+    - Singleton Container
+    - Component Scan
+    - 의존관계 자동 주입
+    - Bean 생명주기
+
+🌐 **스프링 MVC1** 🌐
+- 주요 학습 내용
+  - Servlet
+  - HTTP 요청 처리
+  - MVC 패턴
+  - Front Controller 패턴
+  - MVC Framework 직접 구현
+  - Spring MVC 구조 이해
+
+🧩 **스프링 MVC2** 🧩
+- 주요 학습 내용
+
+#### View Template
+
+- Thymeleaf 기본 기능
+- Template Layout
+- Template Fragment
+
+#### Form 처리
+
+- Form 데이터 바인딩
+- Validation 처리
+- Bean Validation
+
+#### 웹 애플리케이션 기능
+
+- 로그인 처리
+- Session 관리
+- Filter / Interceptor
+
+#### 예외 처리
+
+- 오류 페이지 처리
+- API 예외 처리
+- ExceptionResolver
+
+#### 데이터 처리
+
+- TypeConverter
+- Formatter
+
+#### 파일 처리
+
+- Multipart 요청
+- 파일 업로드 처리
+
 
 ### 2️⃣ 자바
 - 필요한 순간만 찾아서 실습
