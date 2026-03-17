@@ -147,3 +147,177 @@ Spring Transaction
 
 이후 강의에서  
 JDBC의 문제를 단계적으로 해결하는 과정을 학습한다.
+
+
+
+# Section3 - 커넥션 풀과 데이터소스
+
+DB 접근 구조를 개선하는 과정을 흐름으로 이해한다.
+
+---
+
+## v1 - DriverManager 사용
+
+Connection을 직접 생성하는 구조
+
+```
+Application
+   ↓
+DriverManager
+   ↓
+Connection
+   ↓
+Database
+```
+
+문제점
+
+- 매 요청마다 Connection 생성
+- 성능 저하
+- 리소스 낭비
+
+---
+
+## v2 - 커넥션 풀 도입
+
+Connection을 미리 생성하고 재사용
+
+```
+Application
+   ↓
+Connection Pool
+   ↓
+Database
+```
+
+흐름
+
+```
+요청
+ ↓
+Connection Pool에서 Connection 획득
+ ↓
+DB 작업
+ ↓
+Connection 반환
+```
+
+개선점
+
+- 응답 속도 향상
+- Connection 생성 비용 감소
+
+---
+
+## v3 - DataSource 적용
+
+Connection 획득 방식을 추상화
+
+```
+Application
+   ↓
+DataSource
+   ↓
+Connection Pool
+   ↓
+Database
+```
+
+핵심 변화
+
+```
+DriverManager → DataSource
+```
+
+---
+
+## 구조 변화 정리
+
+### before
+
+```
+Application
+   ↓
+DriverManager
+   ↓
+Connection
+```
+
+---
+
+### after
+
+```
+Application
+   ↓
+DataSource
+   ↓
+Connection Pool
+   ↓
+Connection
+```
+
+---
+
+## 핵심 흐름
+
+DB 접근 방식의 발전
+
+```
+DriverManager
+ ↓
+Connection Pool
+ ↓
+DataSource
+```
+
+---
+
+## 🚨 중요 포인트
+
+### 1. Connection 재사용
+
+```
+매번 생성 ❌
+Pool에서 재사용 ⭕
+```
+
+---
+
+### 2. Connection 반환 필수
+
+```
+사용 후 반드시 반환해야 한다.
+```
+
+---
+
+### 3. DataSource 사용 이유
+
+```
+Connection 생성 로직 분리
+```
+
+---
+
+## 다음 단계 연결
+
+이 구조는 이후 트랜잭션과 연결된다.
+
+```
+DataSource
+ ↓
+Connection
+ ↓
+Transaction
+ ↓
+@Transactional
+```
+
+즉, 이 섹션은
+
+```
+Connection 관리 구조 이해
+```
+
+가 핵심이다.
