@@ -321,3 +321,116 @@ Connection 관리 구조 이해
 ```
 
 가 핵심이다.
+
+
+
+# Section4 - 트랜잭션 이해
+
+JDBC를 사용하여 트랜잭션을 직접 제어하는 흐름을 이해한다.
+
+---
+
+## v1 - 트랜잭션 미적용
+
+각 SQL이 독립적으로 실행된다.
+
+```
+Service
+ ↓
+Repository
+ ↓
+DB
+```
+
+문제
+
+```
+중간 실패 시 데이터 불일치 발생
+```
+
+---
+
+## v2 - JDBC 트랜잭션 적용
+
+Connection을 사용하여 트랜잭션을 직접 제어
+
+```
+Service
+ ↓
+Connection 획득
+ ↓
+autoCommit(false)
+ ↓
+Repository
+ ↓
+commit / rollback
+ ↓
+Connection 종료
+```
+
+---
+
+## 트랜잭션 처리 흐름(서비스 계층)
+
+```
+1. Connection 생성
+2. autoCommit(false)
+3. 비즈니스 로직 실행
+4. 성공 → commit
+5. 실패 → rollback
+6. Connection 종료
+```
+
+---
+
+## 핵심 포인트
+
+### 1. 자동 커밋 OFF
+
+```
+autoCommit(false)
+```
+
+→ 트랜잭션 시작
+
+---
+
+### 2. commit / rollback
+
+```
+성공 → commit
+실패 → rollback
+```
+
+---
+
+### 3. 트랜잭션 범위
+
+```
+비즈니스 로직 단위로 설정
+```
+
+---
+
+## 문제점
+
+JDBC 방식은 다음과 같은 문제가 있다.
+
+```
+트랜잭션 코드가 Service에 포함됨
+중복 코드 발생
+유지보수 어려움
+```
+
+---
+
+## 다음 단계 연결
+
+이 문제를 해결하기 위해
+
+```
+트랜잭션 동기화
+Spring 트랜잭션
+```
+
+이 등장한다.
