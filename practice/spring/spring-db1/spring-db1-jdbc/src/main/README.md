@@ -434,3 +434,172 @@ Spring 트랜잭션
 ```
 
 이 등장한다.
+
+
+# Section5 - 스프링과 문제 해결 (트랜잭션)
+
+Spring을 사용하여 트랜잭션 문제를 해결하는 과정을 단계적으로 이해한다.
+
+---
+
+## v1 - JDBC 트랜잭션
+
+```
+Service
+ ↓
+Connection 획득
+ ↓
+autoCommit(false)
+ ↓
+비즈니스 로직
+ ↓
+commit / rollback
+```
+
+문제
+
+- Service에 트랜잭션 코드 포함
+- 중복 코드 발생
+
+---
+
+## v2 - 트랜잭션 매니저 도입
+
+```
+Service
+ ↓
+TransactionManager
+ ↓
+Repository
+ ↓
+DB
+```
+
+개선점
+
+```
+트랜잭션 로직 분리
+```
+
+---
+
+## v3 - 트랜잭션 동기화 적용
+
+```
+TransactionSynchronizationManager
+```
+
+동작
+
+```
+Service → Connection 생성 및 저장
+Repository → 같은 Connection 사용
+```
+
+---
+
+## v4 - @Transactional 적용
+
+```
+@Service
+@Transactional
+public class Service
+```
+
+구조
+
+```
+Controller
+ ↓
+Service (@Transactional)
+ ↓
+Repository
+ ↓
+DB
+```
+
+---
+
+## 트랜잭션 처리 전체 흐름 ⭐⭐⭐⭐⭐
+
+```
+@Transactional
+ ↓
+프록시 객체 생성
+ ↓
+트랜잭션 시작
+ ↓
+Connection 획득
+ ↓
+ThreadLocal 저장
+ ↓
+Service 로직 실행
+ ↓
+Repository 호출
+ ↓
+DB 작업 수행
+ ↓
+성공 → commit
+실패 → rollback
+ ↓
+트랜잭션 종료
+ ↓
+Connection 반환
+```
+
+---
+
+## 내부 동작 흐름
+
+```
+1. 프록시가 Service 호출 가로챔
+2. 트랜잭션 시작
+3. Connection 생성 및 저장
+4. 실제 Service 로직 실행
+5. 예외 여부 확인
+6. commit 또는 rollback
+7. Connection 반환
+```
+
+---
+
+## 핵심 포인트
+
+### 1. 트랜잭션 시작 위치
+
+```
+Service 계층
+```
+
+---
+
+### 2. 트랜잭션 처리 방식
+
+```
+AOP 기반 프록시
+```
+
+---
+
+### 3. Connection 관리
+
+```
+Spring이 자동으로 관리
+```
+
+---
+
+## 🚨 중요 정리
+
+```
+비즈니스 로직과 트랜잭션 로직 분리
+@Transactional = 트랜잭션 처리 자동화 + AOP 기반 처리
+```
+
+---
+
+## 한 줄 정리
+
+```
+@Transactional을 사용하면 트랜잭션을 자동으로 처리할 수 있다
+```
