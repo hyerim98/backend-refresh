@@ -80,6 +80,17 @@
 - Multipart 요청
 - 파일 업로드 처리
 
+💾 **스프링 DB1** 💾
+- 주요 학습 내용
+  - JDBC 기본 개념
+  - DB 연결 구조 이해
+  - DataSource와 커넥션 풀
+  - 트랜잭션 개념 (ACID)
+  - 트랜잭션 적용 (commit / rollback)
+  - Spring 트랜잭션 관리 (@Transactional)
+  - 트랜잭션 AOP 동작 원리
+  - 예외 처리와 DataAccessException
+  - JdbcTemplate 사용
 
 ### 2️⃣ 자바
 - 필요한 순간만 찾아서 실습
