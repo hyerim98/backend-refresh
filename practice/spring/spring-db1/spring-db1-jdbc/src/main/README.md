@@ -603,3 +603,47 @@ Spring이 자동으로 관리
 ```
 @Transactional을 사용하면 트랜잭션을 자동으로 처리할 수 있다
 ```
+
+
+# 섹션6. 자바 예외 이해
+
+## 1. Checked Exception 실습
+- Repository.run()에서 MyCheckedException 발생
+- Service.call()에서 try/catch로 처리
+- 처리 강제되는 것을 확인
+
+## 2. Unchecked Exception 실습
+- Repository.run()에서 MyUncheckedException 발생
+- Service.call()에서는 try/catch 없이 동작
+- 호출 계층을 타고 자동 전파되는 것 확인
+
+## 3. 예외 변환 실습
+- SQLException을 잡아서 MyDbException으로 변환
+- 변환 시 원인(cause)을 꼭 포함
+- 예: new MyDbException("DB 오류", e)
+```
+try {
+      run();
+    }
+    catch (SQLException e) {
+      throw new RuntimeSQLException("DB오류", e); // 중요!
+    }
+```
+
+## 4. cause 보존 테스트
+- MyDbException.getCause()가 SQLException인지 확인하는 테스트 작성
+- 원인 보존의 중요성 이해
+```
+public void call() {
+    try {
+        runSQL();
+    }
+    catch (SQLException e) {
+        throw new RuntimeSQLException(e); //기존 예외(e) 포함 필수!!
+    }
+}
+```
+
+## 5. Checked vs Unchecked 비교 정리
+- Checked는 throws 체인 누적
+- Unchecked는 코드가 깔끔하지만 예외 발생 가능성이 코드에서 드러나지 않음(**보통 언체크 예외 사용**)
