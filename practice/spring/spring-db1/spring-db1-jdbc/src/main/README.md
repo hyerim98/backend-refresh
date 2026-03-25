@@ -647,3 +647,64 @@ public void call() {
 ## 5. Checked vs Unchecked 비교 정리
 - Checked는 throws 체인 누적
 - Unchecked는 코드가 깔끔하지만 예외 발생 가능성이 코드에서 드러나지 않음(**보통 언체크 예외 사용**)
+
+
+# 섹션7. 스프링과 문제 해결 - 예외 처리 반복
+
+## 1. 기존 JDBC 예외 처리 반복 확인 실습
+- try/catch로 SQLException 처리
+- finally에서 리소스 정리
+- 동일한 패턴이 모든 Repository 메서드에 반복됨 확인
+
+---
+
+## 2. DataAccessException 변환 실습
+- SimpleJdbcInsert OR JdbcTemplate 기반 Repository 작성
+- SQLException 발생 시 스프링이 자동으로 적절한 예외로 전환하는 과정 확인
+
+예:
+- 중복 키 발생 → DuplicateKeyException
+- SQL 문법 오류 → BadSqlGrammarException
+
+---
+
+## 3. SQLExceptionTranslator 직접 사용해보기
+- translator = new SQLErrorCodeSQLExceptionTranslator()
+- translator.translate() 결과 로그 출력
+- DB errorCode에 따라 어떤 예외로 변환되는지 실습
+
+---
+
+## 4. 예외 원인(cause) 유지 확인 테스트
+- 변환된 스프링 예외의 cause가 SQLException인지 확인
+- 원인 유지가 정상적으로 되는지 검증
+
+---
+
+## 5. DuplicateKeyException 처리 실습
+- save() 과정에서 중복 키 발생 유도
+- catch(DuplicateKeyException e)로 로직 처리
+  → 예: 재시도 전략 또는 대체 키 사용 등
+
+---
+
+## 6. 스프링 예외 계층 탐색 실습
+- 발생한 예외의 클래스 계층 출력
+- DataAccessException이 상위 추상화임을 확인
+
+---
+
+## 7. Repository 계층에서 기술 의존성 제거 확인
+- Repository 코드에서 SQLException, try/catch가 사라진 구조 실습
+- 코드가 매우 간결해지고 테스트하기 쉬워짐
+
+---
+
+## 8. 전체 흐름 이해 실습
+1) SQL 실행
+2) SQLException 발생
+3) 스프링이 errorCode 분석
+4) 적절한 DataAccessException으로 변환
+5) 서비스·컨트롤러는 도메인 로직에 집중
+
+위 흐름을 로그로 확인해보며 정리
